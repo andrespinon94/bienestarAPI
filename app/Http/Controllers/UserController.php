@@ -34,7 +34,71 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User();
+        
+        if (!$user->userExists($request->email)) 
+        {
+            $user->create($request);
+                    return $this->login($request);
+
+
+
+        }return response()->json(["Error" => "No se pueden crear usuarios con el mismo email o con el email vacío"], 400);
+
+    }
+
+    public function login(Request $request)
+    {
+        $data_token = ['email'=>$request->email];
+        
+        $user = User::where($data_token)->first();
+       
+        if ($user!=null) 
+        {
+            if ($request->password == decrypt($user->password)) 
+            {
+                $token = new Token($data_token);
+                $tokenEncoded = $token->encode();
+                return response()->json(["token" => $tokenEncoded], 201);
+            }
+        }
+        return response()->json(["Error" => "No se ha encontrado"], 401);
+    }
+
+    public function recoverPassword(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (isset($user)) {
+            $newPassword = self::randomPassword();
+            self::sendEmail($user->email, $newPassword);
+            
+            $user->password = encrypt($newPassword);
+            $user->update();
+            
+            return response()->json(["Success" => "Se ha restablecido su contraseña, revise su correo electronico."]);
+        } else {
+            return response()->json(["Error" => "El email no existe"]);
+        }
+    }
+
+    public function sendEmail($email, $newPassword)
+    {
+        $para      = $email;
+        $titulo    = 'Recuperar contraseña de ifoodie';
+        $mensaje   = 'Se ha establecido "'.$newPassword.'" como su nueva contraseña.';
+        mail($para, $titulo, $mensaje);
+    }
+    
+    public function randomPassword()
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array();
+        $alphaLength = strlen($alphabet) - 1;
+        for ($i = 0; $i < 10; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass);
     }
 
     /**
