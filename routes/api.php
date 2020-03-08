@@ -29,6 +29,7 @@ Route::post('recoverPassword','UserController@recoverPassword');
 Route::group(['middleware' => ['auth']], function (){
 
     Route::apiResource('application','ApplicationController');
+    Route::apiResource('usage','UsageController');
     Route::get('show','UserController@show');
 
 });
