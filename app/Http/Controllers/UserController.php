@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use App\Helpers\Token;
 
 class UserController extends Controller
 {
@@ -39,7 +41,8 @@ class UserController extends Controller
         if (!$user->userExists($request->email)) 
         {
             $user->create($request);
-                    return $this->login($request);
+
+            return $this->login($request);
 
 
 
