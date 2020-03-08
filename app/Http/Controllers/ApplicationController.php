@@ -34,7 +34,15 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $application = new application();
+        if(!$application->applicationExists($request->name))
+        {
+            $application->new_application($request);
+        return response()->json(["Success" => "Se ha añadido la aplicacion correctamente"]);
+
+        }else{
+            return response()->json(["Error" => "La aplicacion no se ha añadido correctamente"]);
+        }
     }
 
     /**
@@ -45,7 +53,13 @@ class ApplicationController extends Controller
      */
     public function show($id)
     {
-        //
+        $application = new application();
+        $applications = $application->get_applications();
+        if (isset($applications)) {
+            return response()->json(["Success" => $applications]);
+        } else {
+            return response()->json(["Error" => "No hay aplicaciones guardadas"]);
+        }
     }
 
     /**
