@@ -110,9 +110,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+
+        $email = $request->data_token->email;
+        $user = User::where('email',$email)->first();
+        if(isset($user)){
+            $user->password = decrypt($user->password);
+            return response()->json(["Success" => $user]);
+        }else{
+            return response()->json(["Error" => "El usuario no existe"]);
+        }
+
     }
 
     /**
@@ -135,7 +144,17 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = user::where('email',$request->data_token->email)->first();
+        if (isset($user)) {
+            
+            $user->name = $request->name;
+            $user->password = encrypt($request->password);
+            $user->update();
+        
+            return response()->json(["Success" => "Se ha modificado el usuario."]);
+        }else{
+            return response()->json(["Error" => "El usuario no existe"]);
+        }
     }
 
     /**
