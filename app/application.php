@@ -10,7 +10,7 @@ class application extends Model
     protected $fillable = ['name','icon'];
 
 
-    public function new_application(Request $request)
+    public function new_application($request)
     {
         $application = new application;
         $application->name = $request->name;
