@@ -152,8 +152,11 @@ class UserController extends Controller
             $user->update();
         
             return response()->json(["Success" => "Se ha modificado el usuario."]);
+
         }else{
+
             return response()->json(["Error" => "El usuario no existe"]);
+                        
         }
     }
 

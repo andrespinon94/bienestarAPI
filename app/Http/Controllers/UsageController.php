@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use DateTime;
+use App\usage;
+use App\application;
 
 class UsageController extends Controller
 {
@@ -34,7 +38,36 @@ class UsageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $csv = array_map('str_getcsv' , file('C:\xampp\htdocs\bienestar\app\usage.csv'));
+
+        $csvLength = count($csv);
+
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first();
+
+        for ($i=1; $i < $csvLength ; $i++) { 
+
+                $openDate = new DateTime ($csv[$i][0]);
+                $application = $csv[$i][1];
+                $openLocation = $csv[$i][3] . "," . $csv[$i][4];
+
+                $i++;
+
+                $closeDate =  new DateTime ($csv[$i][0]);
+
+                $timeUsed = $closeDate->getTimestamp() - $openDate->getTimestamp();
+
+                $application = application::where('name',$application)->first();
+
+                if (isset($application)) {
+
+                    $newUsage = new usage();
+                    $newUsage->register($openDate,$timeUsed,$openLocation,$user->id,$application->id);   
+                }               
+
+
+            }
+            return response()->json(["Success" => "Se ha añadido el uso de todas las aplicaciones"]);
     }
 
     /**
@@ -43,10 +76,20 @@ class UsageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $email = $request->data_token->email;
+        $user = User::where('email',$email)->first();
+        $usage = new usage();        
+        $usages = $usage->getUsage($user->id);
+        
+        
+        return response()->json($usages , 200);
+
     }
+    
+
+
 
     /**
      * Show the form for editing the specified resource.
