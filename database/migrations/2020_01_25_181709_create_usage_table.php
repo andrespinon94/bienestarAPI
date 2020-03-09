@@ -16,7 +16,7 @@ class CreateUsageTable extends Migration
         Schema::create('usage', function (Blueprint $table) {
             $table->increments('id');
             $table->date('day');
-            $table->dateTime('useTime');
+            $table->Integer('useTime');
             $table->String('location');
 
             $table->Integer('user_id')->unsigned();
