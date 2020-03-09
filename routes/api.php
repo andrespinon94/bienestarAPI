@@ -31,5 +31,6 @@ Route::group(['middleware' => ['auth']], function (){
     Route::apiResource('application','ApplicationController');
     Route::apiResource('usage','UsageController');
     Route::get('show','UserController@show');
+    Route::put('update', 'UserController@update');
 
 });
