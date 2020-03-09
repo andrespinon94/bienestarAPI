@@ -80,8 +80,8 @@ class UsageController extends Controller
     {
         $email = $request->data_token->email;
         $user = User::where('email',$email)->first();
-        $usage = new usage();        
-        $usages = $usage->getUsage($user->id);
+      
+        $usages = usage::where('user_id',$user->id)->get();
         
         
         return response()->json($usages , 200);
