@@ -21,4 +21,24 @@ class usage extends Model
         $usage->save();
     }
     
+    public function getUsage ($user_id)
+    {
+        $usages = DB::table('app_usage')->select('user_id','application_id','day',DB::raw("SUM(useTime) as totalTime"))
+                                        ->from('app_usage')
+                                        ->where('user_id', $user_id)
+                                        ->groupBy('user_id','application_id','day')
+                                        ->get();
+        return $usages;
+    }
+    public function getLocationUsage ($user_id)
+    {
+        $usages = DB::table('app_usage')->select('user_id','application_id','location')
+                                        ->from('app_usage')
+                                        ->where('user_id', $user_id)
+                                        ->groupBy('user_id','application_id','location')
+                                        ->get();
+        return $usages;
+    }
+
+    
 }

@@ -88,6 +88,15 @@ class UsageController extends Controller
 
     }
     
+    public function map(Request $request)
+    {
+        $email = $request->data_token->email;
+        $user = User::where('email',$email)->first();
+        $usage = new usage();        
+        $usages = $usage->getLocationUsage($user->id);
+
+        return response()->json($usages , 201);
+    }
 
 
 
