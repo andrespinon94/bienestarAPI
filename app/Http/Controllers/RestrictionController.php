@@ -3,6 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\restriction;
+use App\User;
+use App\Helper\Token;
+use App\application;
+
+
+
+
 
 class RestrictionController extends Controller
 {
@@ -34,7 +42,29 @@ class RestrictionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $restriction = new restriction();
+        $application = application::where('name',$request->name)->first();
+        if (isset($application)) {    
+            $email = $request->data_token->email;
+            $user = User::where('email',$email)->first();
+            if (isset($user)) {
+                if (is_null($request->max_time)) {
+                    if (is_null($request->start_hour_restriction) || is_null($request->finish_hour_restriction)) {
+                        return response()->json(["Error" => "Debe de haber alguna restriction"]);
+                    }else{     
+                        $restriction->new_Restriction($request,$user->id,$application->id);
+                        return response()->json(["Success" => "Se ha añadido la restriction"]);
+                    }
+                }else{
+                    $restriction->new_Restriction($request,$user->id,$application->id);
+                    return response()->json(["Success" => "Se ha añadido la restriction"]);
+                }
+            }else{
+                return response()->json(["Error" => "El usuario no existe"]);
+            }
+        }else{
+            return response()->json(["Error" => "La aplicacion no existe"]);
+        }
     }
 
     /**
@@ -43,9 +73,16 @@ class RestrictionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $email = $request->data_token->email;
+        $user = User::where('email',$email)->first();
+      
+        $restrictions = restriction::where('user_id',$user->id)->get();
+        
+        
+        return response()->json($restrictions , 200);
+
     }
 
     /**
@@ -77,8 +114,20 @@ class RestrictionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $restriction = restriction::where('id',$request->id)->first();
+
+        if (isset($restriction)) {
+            $restriction->delete();
+            return response()->json(["Success" => 'Se ha eliminado la restriccion']);   
+
+        }else{
+          
+            return response()->json(["Error" => "La restriction no existe"]);    
+
+        }
     }
+
 }
+
