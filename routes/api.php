@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth']], function (){
 
     Route::apiResource('application','ApplicationController');
     Route::apiResource('usage','UsageController');
+    Route::apiResource('restriction','RestrictionController');
+    Route::get('showlocations','UsageController@map');
     Route::get('show','UserController@show');
     Route::put('update', 'UserController@update');
 

@@ -10,7 +10,7 @@ class restriction extends Model
     protected $fillable = ['max_time','start_hour_restriction','finish_hour_restriction','user_id','application_id'];
 
 
-    public function new_Restriction(Request $request,$user_id,$application_id)
+    public function new_Restriction($request,$user_id,$application_id)
     {
         $restriction = new restriction;
         $restriction->max_time = $request->max_time;
