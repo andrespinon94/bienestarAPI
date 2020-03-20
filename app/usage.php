@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class usage extends Model
 {
@@ -21,7 +22,7 @@ class usage extends Model
         $usage->save();
     }
     
-    public function getUsage ($user_id)
+  /*  public function getUsage ($user_id)
     {
         $usages = DB::table('app_usage')->select('user_id','application_id','day',DB::raw("SUM(useTime) as totalTime"))
                                         ->from('app_usage')
@@ -29,11 +30,12 @@ class usage extends Model
                                         ->groupBy('user_id','application_id','day')
                                         ->get();
         return $usages;
-    }
+    }  */
+
     public function getLocationUsage ($user_id)
     {
-        $usages = DB::table('app_usage')->select('user_id','application_id','location')
-                                        ->from('app_usage')
+        $usages = DB::table('usage')->select('user_id','application_id','location')
+                                        ->from('usage')
                                         ->where('user_id', $user_id)
                                         ->groupBy('user_id','application_id','location')
                                         ->get();

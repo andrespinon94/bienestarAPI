@@ -7,6 +7,7 @@ use App\User;
 use DateTime;
 use App\usage;
 use App\application;
+use DB;
 
 class UsageController extends Controller
 {
